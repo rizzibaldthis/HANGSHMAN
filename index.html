@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HANGMAN - Neon Arcade Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="game-container" id="gameContainer">
+        <header class="game-header">
+            <div class="title-section">
+                <h1 class="game-title">⚡ HANGMAN ⚡</h1>
+                <div class="boss-badge" id="bossBadge">👹 BOSS ROUND!</div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <span class="stat-label">ROUND</span>
+                    <span class="stat-value" id="roundDisplay">1</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">SCORE</span>
+                    <span class="stat-value" id="scoreDisplay">0</span>
+                </div>
+                <div class="stat-card highlight">
+                    <span class="stat-label">HIGH SCORE</span>
+                    <span class="stat-value" id="highScoreDisplay">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="status-panel">
+            <div class="category-selector-box">
+                <label for="categorySelect">CATEGORY:</label>
+                <select id="categorySelect">
+                    <option value="Random">🎲 Random (All)</option>
+                    <option value="Animals">🦁 Animals</option>
+                    <option value="Food">🍕 Food</option>
+                    <option value="Sports">⚽ Sports</option>
+                    <option value="Technology">💻 Technology</option>
+                    <option value="Programming">💻 Programming</option>
+                </select>
+            </div>
+
+            <div class="combo-box" id="comboBox">
+                <span class="combo-icon">🔥</span>
+                <span class="combo-text" id="comboText">COMBO: 0 (x1)</span>
+            </div>
+
+            <div class="reaction-box">
+                <div class="reaction-emoji" id="reactionEmoji">😐</div>
+                <div class="reaction-status" id="reactionStatus">Feeling normal</div>
+            </div>
+        </div>
+
+        <main class="gameplay-area">
+            <div class="hangman-section">
+                <div class="lives-container">
+                    <span class="lives-label">LIVES:</span>
+                    <div class="hearts-row" id="heartsRow">
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                    </div>
+                </div>
+
+                <svg class="hangman-svg" viewBox="0 0 200 220" id="hangmanSvg" aria-label="Hangman Figure">
+                    <line x1="20" y1="200" x2="160" y2="200" class="gallows base" />
+                    <line x1="50" y1="200" x2="50" y2="20" class="gallows pole" />
+                    <line x1="50" y1="20" x2="130" y2="20" class="gallows beam" />
+                    <line x1="50" y1="50" x2="80" y2="20" class="gallows support" />
+                    <line x1="130" y1="20" x2="130" y2="55" class="gallows rope" />
+
+                    <circle cx="130" cy="70" r="15" class="man-part" id="part-head" />
+                    <line x1="130" y1="85" x2="130" y2="135" class="man-part" id="part-body" />
+                    <line x1="130" y1="98" x2="105" y2="120" class="man-part" id="part-left-arm" />
+                    <line x1="130" y1="98" x2="155" y2="120" class="man-part" id="part-right-arm" />
+                    <line x1="130" y1="135" x2="105" y2="175" class="man-part" id="part-left-leg" />
+                    <line x1="130" y1="135" x2="155" y2="175" class="man-part" id="part-right-leg" />
+                </svg>
+            </div>
+
+            <div class="word-section">
+                <div class="current-category-tag">
+                    Category: <span id="activeCategoryName">Animals</span>
+                </div>
+
+                <div class="word-blanks" id="wordBlanks">
+                </div>
+
+                <div class="wrong-letters-container">
+                    <span class="wrong-label">WRONG LETTERS:</span>
+                    <div class="wrong-letters-list" id="wrongLettersList">
+                        <span class="none-text">None</span>
+                    </div>
+                </div>
+
+                <div class="powerup-container">
+                    <button class="powerup-btn" id="powerUpBtn" title="Use a mystery power-up!">
+                        <span class="powerup-icon">⚡</span>
+                        <span class="powerup-label">USE POWER-UP</span>
+                        <span class="powerup-badge" id="powerUpCount">3 LEFT</span>
+                    </button>
+                    <div class="powerup-hint">Reveals a letter, heals 1 life, eliminates 3 duds, or swaps word!</div>
+                </div>
+            </div>
+        </main>
+
+        <section class="keyboard-section">
+            <div class="keyboard" id="keyboard">
+            </div>
+        </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal-content video-card">
+            <div class="modal-header">
+                <h3 id="videoModalTitle">⚠️ YOU'RE WRONG</h3>
+                <button class="modal-close-btn" id="closeVideoBtn">✕</button>
+            </div>
+
+            <div class="video-wrapper">
+                <video id="memeVideo" playsinline preload="auto">
+                </video>
+
+                <div class="video-fallback" id="videoFallback">
+                    <div class="fallback-icon" id="fallbackEmoji">🎬</div>
+                    <div class="fallback-title" id="fallbackTitle">MEME TIME!</div>
+                    <p class="fallback-msg" id="fallbackMsg">Place your meme MP4 files in the game folder to see custom clips play!</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="skipVideoBtn">Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="winModal">
+        <div class="modal-content result-card win-theme">
+            <div class="result-icon">🎉</div>
+            <h2 class="result-title" id="winTitle">ROUND CLEARED!</h2>
+            <p class="result-subtitle">Great job guessing the word:</p>
+            <div class="revealed-word win" id="winWordDisplay">WORD</div>
+            <div class="round-summary">
+                <p>Round Points: <span class="highlight-text" id="winRoundPoints">+0</span></p>
+                <p>Total Score: <span class="highlight-text" id="winTotalScore">0</span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="nextRoundBtn">NEXT ROUND ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="gameOverModal">
+        <div class="modal-content result-card lose-theme">
+            <div class="result-icon">💀</div>
+            <h2 class="result-title">GAME OVER</h2>
+            <p class="result-subtitle">The secret word was:</p>
+            <div class="revealed-word lose" id="loseWordDisplay">WORD</div>
+            <div class="round-summary">
+                <p>Final Score: <span class="highlight-text" id="finalScore">0</span></p>
+                <p>Rounds Survived: <span class="highlight-text" id="roundsSurvived">0</span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="playAgainBtn">PLAY AGAIN 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
